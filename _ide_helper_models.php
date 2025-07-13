@@ -60,6 +60,9 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
+ * @property-read int|null $products_count
+ * @method static \Database\Factories\CategoryFactory factory($count = null, $state = [])
  */
 	class Category extends \Eloquent {}
 }
