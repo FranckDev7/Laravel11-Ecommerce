@@ -42,11 +42,14 @@
                                         {{ $item->qty }}
                                     </td>
                                     <td class="text-center">
-                                        <div class="row">
+                                        <div class="row d-flex justify-content-center align-items-center pt-3">
                                             <div class="col-6">
                                                 <form method="POST" action="{{ route('wishlist.move.to.cart', ['rowId' => $item->rowId]) }}">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-sm btn-warning">Deplacer vers le panier</button>
+                                                    <button type="submit" class="btn btn-sm btn-warning w-100 mb-2 d-flex align-items-center justify-content-center gap-1 shadow-sm">
+                                                        <i class="bi bi-cart-plus"></i>
+                                                        Déplacer
+                                                    </button>
                                                 </form>
                                             </div>
 

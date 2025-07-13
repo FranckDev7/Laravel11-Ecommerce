@@ -122,6 +122,8 @@ Route::middleware('auth')->group(function(){
     Route::put('/admin/product/update', [AdminController::class, 'product_update'])->name('admin.product.update');
     Route::delete('/admin/product/{id}/delete', [AdminController::class, 'product_delete'])->name('admin.product.delete');
 
+    // Route pour les coupons
+    Route::get('/admin/coupons', [AdminController::class, 'coupons'])->name('admin.coupons');
 });
 
 
