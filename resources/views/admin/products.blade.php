@@ -1,15 +1,17 @@
 @extends('layouts.admin')
 @section('content')
-    <style>
-        .swal-wide {
-            width: 480px !important;
-            max-width: 90%;
-            font-size: 15px; /* taille du texte plus grande */
-        }
-        .swal-text-rouge {
-            color: red;
-        }
-    </style>
+    @push('styles')
+        <style>
+            .swal-wide {
+                width: 480px !important;
+                max-width: 90%;
+                font-size: 15px; /* taille du texte plus grande */
+            }
+            .swal-text-rouge {
+                color: red;
+            }
+        </style>
+    @endpush
     <div class="main-content-inner">
         <div class="main-content-wrap">
             <div class="flex items-center flex-wrap justify-between gap20 mb-27">

@@ -8,6 +8,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WishListController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Rap2hpoutre\LaravelLogViewer\LogViewerController;
 
 /**
  * Une façade dans Laravel est une classe qui fournit un accès statique à une instance d’un service
@@ -67,6 +68,9 @@ Auth::routes();
 
 // Routes non sécurisées
 
+// Route pour les logs
+Route::get('logs', [LogViewerController::class, 'index']);
+
 // Route d'accueil
 Route::get('/', [HomeController::class, 'index'])->name('home.index');
 
@@ -81,6 +85,10 @@ Route::put('/cart/increase-quantity/{rowId}', [CartController::class, 'increase_
 Route::put('/cart/decrease-quantity/{rowId}', [CartController::class, 'decrease_cart_quantity'])->name('cart.qty.decrease');
 Route::delete('/cart/remove/{rowId}', [CartController::class, 'remove_item'])->name('cart.item.remove');
 Route::delete('/cart/clear', [CartController::class, 'empty_cart'])->name('cart.empty');
+
+// Coupons
+Route::post('/cart/apply-coupon',[CartController::class, 'apply_coupon_code'])->name('cart.coupon.apply');
+Route::delete('/cart/remove-coupon',[CartController::class, 'remove_coupon_code'])->name('cart.coupon.remove');
 
 // Route d'instance ('wishlist') du panier
 Route::post('/wishlist/add', [WishListController::class, 'add_to_wishlist'])->name('wishlist.add');
@@ -124,6 +132,11 @@ Route::middleware('auth')->group(function(){
 
     // Route pour les coupons
     Route::get('/admin/coupons', [AdminController::class, 'coupons'])->name('admin.coupons');
+    Route::get('/admin/coupon/add', [AdminController::class, 'coupon_add'])->name('admin.coupon.add');
+    Route::post('/admin/coupon/store', [AdminController::class, 'coupon_store'])->name('admin.coupon.store');
+    Route::get('/admin/coupon/{id}/edit', [AdminController::class, 'coupon_edit'])->name('admin.coupon.edit');
+    Route::put('/admin/coupon/update', [AdminController::class, 'coupon_update'])->name('admin.coupon.update');
+    Route::delete('/admin/coupon/{id}/delete', [AdminController::class, 'coupon_delete'])->name('admin.coupon.delete');
 });
 
 

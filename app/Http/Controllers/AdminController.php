@@ -85,7 +85,7 @@ class AdminController extends Controller
     // BRAND_EDIT
     public function brand_edit($id)
     {
-        $brand = Brand::find($id);
+        $brand = Brand::findOrFail($id);
         return view('admin.brand-edit', compact('brand'));
     }
 
@@ -99,7 +99,7 @@ class AdminController extends Controller
             'image' => 'mimes:png,jpg,jpeg,webp,svg|max:2048'
         ]);
 
-        $brand = Brand::find($request->id);
+        $brand = Brand::findOrFail($request->id);
 
         $brand->name = $request->name;
         $brand->slug = Str::slug($request->name);
@@ -151,7 +151,7 @@ class AdminController extends Controller
    // BRAND_DELETE
     public function brand_delete($id)
     {
-        $brand = Brand::find($id); // récupère la marque à supprimer via son identifiant
+        $brand = Brand::findOrFail($id); // récupère la marque à supprimer via son identifiant
 
 
         if(File::exists(public_path('uploads/brands').'/'. $brand->image))
@@ -226,7 +226,7 @@ class AdminController extends Controller
     // CATEGORY_EDIT
     public function category_edit($id)
     {
-        $category = Category::find($id);
+        $category = Category::findOrFail($id);
         return view('admin.category-edit', compact('category'));
     }
 
@@ -238,7 +238,7 @@ class AdminController extends Controller
             'image' => 'mimes:png,jpg,jpeg,webp,svg|max:2048'
         ]);
 
-        $category = Category::find($request->id);
+        $category = Category::findOrFail($request->id);
 
         $category->name = $request->name;
         $category->slug = Str::slug($request->name);
@@ -266,7 +266,7 @@ class AdminController extends Controller
     // CATEGORY_DELETE
     public function category_delete($id)
     {
-        $category = Category::find($id); // récupère la marque à supprimer via son identifiant
+        $category = Category::findOrFail($id); // récupère la marque à supprimer via son identifiant
         if(File::exists(public_path('uploads/categories').'/'.$category->image))
         {
             // Si un fichier image est associé à cette marque et qu'il existe physiquement
@@ -418,7 +418,7 @@ class AdminController extends Controller
     // PRODUCT_EDIT
     public function product_edit($id)
     {
-        $product = Product::find($id);
+        $product = Product::findOrFail($id);
         $categories = Category::select(['id', 'name'])->orderBy('name')->get();
         $brands = Brand::select(['id', 'name'])->orderBy('name')->get();
         return view('admin.product-edit', compact('product', 'categories', 'brands'));
@@ -445,7 +445,7 @@ class AdminController extends Controller
             'brand_id' => 'required'
         ]);
 
-        $product = Product::find($request->id);
+        $product = Product::findOrFail($request->id);
         $product->name = $request->name;
         $product->slug = Str::slug($request->name);
         $product->short_description = $request->short_description;
@@ -515,9 +515,10 @@ class AdminController extends Controller
     }
 
 
+    // PRODUCT_DELETE
     public function product_delete($id)
     {
-        $product = Product::find($id);
+        $product = Product::findOrFail($id);
 
         if(File::exists(public_path('uploads/products').'/'.$product->image)) {
             File::delete(public_path('uploads/products').'/'.$product->image);
@@ -542,10 +543,80 @@ class AdminController extends Controller
         return redirect()->route('admin.products')->with('status', 'Produit supprimé avec succès');
     }
 
+
+    // COUPONS
     public function coupons()
     {
         $coupons = Coupon::orderBy('expiry_date', 'DESC')->paginate(12);
         return view('admin.coupons', compact('coupons'));
     }
 
+
+    // COUPON-ADD
+    public function coupon_add()
+    {
+        return view('admin.coupon-add');
+    }
+
+    // COUPON STORE
+    public function coupon_store(Request $request)
+    {
+        $request->validate([
+            'code' => 'required|unique:coupons,code',
+            'type' => 'required',
+            'value' => 'required|numeric',
+            'cart_value' => 'required|numeric',
+            'expiry_date' => 'required|date',
+        ]);
+
+        $coupon = new Coupon();
+        $coupon->code = $request->code;
+        $coupon->type = $request->type;
+        $coupon->value = $request->value;
+        $coupon->cart_value = $request->cart_value;
+        $coupon->expiry_date = $request->expiry_date;
+
+        $coupon->save();
+        return redirect()->route('admin.coupons')->with('status', 'Coupon ajouté avec succès');
+    }
+
+
+    // COUPON_EDIT
+    public function coupon_edit($id)
+    {
+        // findOrFail : evite un retour null silencieux si l'ID n’existe pas.
+        // Cela déclenche automatiquement une 404 Not Found.
+        $coupon = Coupon::findOrFail($id);
+        return view('admin.coupon-edit', compact('coupon'));
+    }
+
+
+    // COUPON_UPDATE
+    public function coupon_update(Request $request)
+    {
+        $request->validate([
+            'code' => 'required',
+            'type' => 'required',
+            'value' => 'required|numeric',
+            'cart_value' => 'required|numeric',
+            'expiry_date' => 'required|date',
+        ]);
+
+        $coupon = Coupon::findOrFail($request->id);
+        $coupon->code = $request->code;
+        $coupon->type = $request->type;
+        $coupon->value = $request->value;
+        $coupon->cart_value = $request->cart_value;
+        $coupon->expiry_date = $request->expiry_date;
+        $coupon->save();
+        return redirect()->route('admin.coupons')->with('status', 'coupon mis a jour avec succès');
+    }
+
+    public function coupon_delete($id)
+    {
+        $coupon = Coupon::findOrFail($id);
+        $coupon->delete();
+        return redirect()->route('admin.coupons')->with('status', 'coupon supprimé avec succès');
+
+    }
 }
