@@ -1,6 +1,20 @@
 @extends('layouts.app')
 @section('content')
     <main class="pt-90">
+
+        {{-- Affiche n'importe quelle erreur --}}
+        <div class="mb-3">
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                    </ul>
+                </div>
+            @endif
+        </div>
+
         <div class="mb-4 pb-4"></div>
         <section class="shop-checkout container">
         <h2 class="page-title">Commande reçue</h2>
@@ -49,7 +63,7 @@
                 </div>
                 <div class="order-info__item">
                     <label>Total</label>
-                    <span>${{ $order->total }}</span>
+                    <span>{{ $order->total }} $</span>
                 </div>
                 <div class="order-info__item">
                     <label>Méthode de paiement</label>
@@ -57,53 +71,55 @@
                 </div>
             </div>
             <div class="checkout__totals-wrapper">
-            <div class="checkout__totals">
-                <h3>Details de la commande</h3>
-                <table class="checkout-cart-items">
-                    <thead>
-                        <tr>
-                            <th>PRODUIT</th>
-                            <th>SOUS-TOTAL</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($order->orderItems as $item)
+                <div class="checkout__totals">
+                    <h3>Details de la commande</h3>
+                    <table class="checkout-cart-items">
+                        <thead>
                             <tr>
-                                <td>
-                                    {{ $item->product->name }} x {{ $item->quantity }}
-                                </td>
-                                <td>
-                                    {{ $item->price }}
-                                </td>
+                                <th>PRODUIT</th>
+                                <th class="text-left">PRIX UNITAIRE</th>
+                                <th>SOUS-TOTAL</th>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                <table class="checkout-totals">
-                <tbody>
-                    <tr>
-                        <th>SOUS-TOTAL</th>
-                        <td>${{ $order->subtotal }}</td>
-                    </tr>
-                    <tr>
-                        <th>DISCOUNT</th>
-                        <td>${{ $order->discount }}</td>
-                    </tr>
-                    <tr>
-                        <th>EXPEDITION</th>
-                        <td>gratuite</td>
-                    </tr>
-                    <tr>
-                        <th>TVA</th>
-                        <td>${{ $order->tax }}</td>
-                    </tr>
-                    <tr>
-                        <th>TOTAL</th>
-                        <td>${{ $order->total }}</td>
-                    </tr>
-                </tbody>
-                </table>
-            </div>
+                        </thead>
+                        <tbody>
+                            @foreach ($order->orderItems as $item)
+                                <tr>
+                                    <td>
+                                        {{ $item->product->name }} x {{ $item->quantity }}
+                                    </td>
+                                    <td class="text-left">{{ $item->price }} $</td>
+                                    <td class="text-right">
+                                        {{ $item->price * $item->quantity }} $
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                    <table class="checkout-totals">
+                        <tbody>
+                            <tr>
+                                <th>SOUS-TOTAL</th>
+                                <td class="text-right">{{ $order->subtotal }} $</td>
+                            </tr>
+                            <tr>
+                                <th>RABAIS</th>
+                                <td class="text-right">{{ $order->discount }} $</td>
+                            </tr>
+                            <tr>
+                                <th>EXPEDITION</th>
+                                <td class="text-right">gratuite</td>
+                            </tr>
+                            <tr>
+                                <th>TVA</th>
+                                <td class="text-right">{{ $order->tax }} $</td>
+                            </tr>
+                            <tr>
+                                <th>TOTAL</th>
+                                <td class="text-right">{{ $order->total }} $</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         </section>

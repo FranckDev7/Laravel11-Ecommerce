@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- *
+ * 
  *
  * @property int $id
  * @property int $user_id
@@ -50,14 +50,13 @@ class Address extends Model
         'user_id',
         'name',
         'phone',
-        'zip',
-        'state',
-        'city',
+        'district', 
         'address',
-        'locality',
-        'landmark',
-        'isdefault',
+        'code_postal',
+        'city',
         'country',
+        'landmark',
         'type',
+        'isdefault',
     ];
 }

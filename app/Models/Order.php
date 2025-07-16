@@ -73,13 +73,13 @@ class Order extends Model
         'total',
         'name',
         'phone',
-        'locality',
+        'district',
         'city',
-        'state',
         'country',
         'landmark',
-        'zip',
+        'code_postal',   
     ];
+
 
 
     /**

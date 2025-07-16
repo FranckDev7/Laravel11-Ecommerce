@@ -13,6 +13,20 @@
         </style>
     @endpush
     <main class="pt-90">
+
+        {{-- Affiche n'importe quelle erreur --}}
+        <div class="mb-3">
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                    </ul>
+                </div>
+            @endif
+        </div>
+
         <section class="shop-main container d-flex pt-4 pt-xl-5">
             <div class="shop-sidebar side-sticky bg-body" id="shopFilter">
                 <div class="aside-header d-flex d-lg-none align-items-center">

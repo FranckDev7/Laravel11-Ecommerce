@@ -3,6 +3,20 @@
 @extends('layouts.app')
 @section('content')
     <main class="pt-90">
+
+        {{-- Affiche n'importe quelle erreur --}}
+        <div class="mb-3">
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                    </ul>
+                </div>
+            @endif
+        </div>
+
         <div class="mb-4 pb-4"></div>
         <section class="shop-checkout container">
             <h2 class="page-title">Expédition et paiement</h2>
@@ -62,12 +76,8 @@
                                                 <div class="col-sm-8">{{ $address->landmark ?? 'N/A' }}</div>
                                             </div>
                                             <div class="row mb-2">
-                                                <div class="col-sm-4 fw-semibold">Ville / État / Pays :</div>
-                                                <div class="col-sm-8">{{ $address->city }}, {{ $address->state }}, {{ $address->country }}</div>
-                                            </div>
-                                            <div class="row mb-2">
                                                 <div class="col-sm-4 fw-semibold">Code postal :</div>
-                                                <div class="col-sm-8">{{ $address->zip }}</div>
+                                                <div class="col-sm-8">{{ $address->code_postal }}</div>
                                             </div>
                                             <div class="row">
                                                 <div class="col-sm-4 fw-semibold">Téléphone :</div>
@@ -80,6 +90,7 @@
 
                         @else
                             <div class="row mt-5">
+                                {{-- name OK--}}
                                 <div class="col-md-6">
                                     <div class="form-floating my-3">
                                         <input type="text" class="form-control" name="name" value="{{ old('name') }}">
@@ -87,6 +98,7 @@
                                         @error('name') <span class="text-danger">{{ $message }}</span> @endif
                                     </div>
                                 </div>
+                                {{-- phone OK--}}
                                 <div class="col-md-6">
                                     <div class="form-floating my-3">
                                         <input type="text" class="form-control" name="phone" value="{{ old('phone') }}">
@@ -94,20 +106,15 @@
                                         @error('phone') <span class="text-danger">{{ $message }}</span> @endif
                                     </div>
                                 </div>
+                                {{-- code_postal OK--}}
                                 <div class="col-md-4">
                                     <div class="form-floating my-3">
-                                        <input type="text" class="form-control" name="zip" value="{{ old('zip') }}">
-                                        <label for="zip">Code pin *</label>
-                                        @error('zip') <span class="text-danger">{{ $message }}</span> @endif
+                                        <input type="text" class="form-control" name="code_postal" value="{{ old('code_postal') }}">
+                                        <label for="code_postal">Code Postal *</label>
+                                        @error('code_postal') <span class="text-danger">{{ $message }}</span> @endif
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-floating mt-3 mb-3">
-                                        <input type="text" class="form-control" name="state" value="{{ old('state') }}">
-                                        <label for="state">Etat *</label>
-                                        @error('state') <span class="text-danger">{{ $message }}</span> @endif
-                                    </div>
-                                </div>
+                                {{-- city OK--}}
                                 <div class="col-md-4">
                                     <div class="form-floating my-3">
                                         <input type="text" class="form-control" name="city" value="{{ old('city') }}">
@@ -115,20 +122,31 @@
                                         @error('city') <span class="text-danger">{{ $message }}</span> @endif
                                     </div>
                                 </div>
+                                {{-- country OK--}}
+                                <div class="col-md-4">
+                                    <div class="form-floating mt-3 mb-3">
+                                        <input type="text" class="form-control" name="country" value="RDC">
+                                        <label for="state">Pays</label>
+                                        <span class="text-danger"></span>
+                                    </div>
+                                </div>
+                                {{-- address OK--}}
                                 <div class="col-md-6">
                                     <div class="form-floating my-3">
                                         <input type="text" class="form-control" name="address" value="{{ old('address') }}">
-                                        <label for="address">Numéro de maison, nom du bâtiment *</label>
+                                        <label for="address">Adresse de livraison *</label>
                                         @error('address') <span class="text-danger">{{ $message }}</span> @endif
                                     </div>
                                 </div>
+                                {{-- district OK--}}
                                 <div class="col-md-6">
                                     <div class="form-floating my-3">
-                                        <input type="text" class="form-control" name="locality" value="{{ old('locality') }}">
-                                        <label for="locality">Nom de la route, zone, colonie *</label>
-                                        @error('locality') <span class="text-danger">{{ $message }}</span> @endif
+                                        <input type="text" class="form-control" name="district" value="{{ old('district') }}">
+                                        <label for="district">District *</label>
+                                        @error('district') <span class="text-danger">{{ $message }}</span> @endif
                                     </div>
                                 </div>
+                                {{-- landmark OK--}}
                                 <div class="col-md-12">
                                     <div class="form-floating my-3">
                                         <input type="text" class="form-control" name="landmark" value="{{ old('landmark') }}">

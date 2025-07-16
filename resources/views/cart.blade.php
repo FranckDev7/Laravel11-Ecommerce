@@ -19,6 +19,20 @@
         </style>
     @endpush
     <main class="pt-90">
+
+        {{-- Affiche n'importe quelle erreur --}}
+        <div class="mb-3">
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                    </ul>
+                </div>
+            @endif
+        </div>
+
     <div class="mb-4 pb-4"></div>
     <section class="shop-checkout container">
         <h2 class="page-title">Panier</h2>

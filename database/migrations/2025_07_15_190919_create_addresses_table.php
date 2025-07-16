@@ -16,13 +16,12 @@ return new class extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->string('name');
             $table->string('phone');
-            $table->string('locality');
+            $table->string('district');
             $table->text('address');
+            $table->string('code_postal');
             $table->string('city');
-            $table->string('state');
             $table->string('country');
             $table->string('landmark')->nullable();
-            $table->string('zip');
             $table->string('type')->default('home');
             $table->boolean('isdefault')->default(false);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

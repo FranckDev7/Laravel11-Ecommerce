@@ -172,11 +172,12 @@ class CartController extends Controller
             $totalAfterDiscount = $subtotalAfterDiscount + $taxAfterDiscount;
 
             Session::put('discounts', [
-                'discount' => number_format(floatval($discount), 2, '.', ','),
-                'subtotal_after_discount' => number_format(floatval($subtotalAfterDiscount), 2, '.', ','),
-                'tax_after_discount' => number_format(floatval($taxAfterDiscount), 2, '.', ','),
-                'total_after_discount' => number_format(floatval($totalAfterDiscount), 2, '.', ','),
+                'discount' => round($discount, 2),
+                'subtotal_after_discount' => round($subtotalAfterDiscount, 2),
+                'tax_after_discount' => round($taxAfterDiscount, 2),
+                'total_after_discount' => round($totalAfterDiscount, 2),
             ]);
+
         }
     }
 
@@ -200,6 +201,8 @@ class CartController extends Controller
 
     public function place_an_order(Request $request)
     {
+        //dd($request->all());
+
         // Récupère l'utilisateur actuellement authentifién et son addresse par défaut.
         $user_id = Auth::user()->id;
         $address = Address::where('user_id', $user_id)->where('isdefault', true)->first();
@@ -208,15 +211,16 @@ class CartController extends Controller
         if(!$address)
         {
             $validated = $request->validate([
-                'name' => 'required|string|max:100',
-                'phone' => 'required|numeric|digits:10',
-                'zip' => 'required|numeric|digits:6',
-                'state' => 'required|string|max:100',
-                'city' => 'required|string|max:100',
-                'address' => 'required|string|max:255',
-                'locality' => 'required|string|max:100',
-                'landmark' => 'nullable|string|max:150',
-                'isdefault' => 'sometimes|boolean',
+                'name'         => 'required|string|max:100',
+                'phone'        => 'required|string|min:6|max:20',
+                'district'     => 'required|string|max:100', // <- il doit exister dans la requête
+                'address'      => 'required|string|max:255',
+                'code_postal'  => 'required|string|max:10',
+                'city'         => 'required|string|max:100',
+                'country'      => 'required|string|max:100',
+                'landmark'     => 'nullable|string|max:150',
+                'type'         => 'nullable|in:home,office,other',
+                'isdefault'    => 'sometimes|boolean',
             ]);
 
             $address = new Address(array_merge($validated, [
@@ -233,20 +237,22 @@ class CartController extends Controller
         // Evite l'erreur de type 'NULL' ou undefined 'index' si la clé de session 'checkout' est vide
         $checkout = Session::get('checkout', []);
 
+        //dd($checkout);
+
+
         $order = Order::create([
             'user_id'   => $user_id,
-            'subtotal'  => $checkout['subtotal'] ?? 0,
-            'discount'  => $checkout['discount'] ?? 0,
-            'tax'       => $checkout['tax'] ?? 0,
-            'total'     => $checkout['total'] ?? 0,
+            'subtotal'  => floatval($checkout['subtotal'] ?? 0),
+            'discount'  => floatval($checkout['discount'] ?? 0),
+            'tax'       => floatval($checkout['tax'] ?? 0),
+            'total'     => floatval($checkout['total'] ?? 0),
             'name'      => $address->name,
             'phone'     => $address->phone,
-            'locality'  => $address->address,
+            'district'  => $address->district,
             'city'      => $address->city,
-            'state'     => $address->state,
             'country'   => $address->country,
             'landmark'  => $address->landmark,
-            'zip'       => $address->zip,
+            'code_postal' => $address->code_postal,
         ]);
 
         foreach (Cart::instance('cart')->content() as $item) {
@@ -302,33 +308,48 @@ class CartController extends Controller
         if(Session::has('coupon'))
         {
             Session::put('checkout', [
-                'discount' => Session::get('discounts')['discount'],
-                'subtotal' => Session::get('discounts')['subtotal_after_discount'],
-                'tax' => Session::get('discounts')['tax_after_discount'],
-                'total' => Session::get('discounts')['total_after_discount']
+                'discount' => floatval(Session::get('discounts')['discount']),
+                'subtotal' => floatval(Session::get('discounts')['subtotal_after_discount']),
+                'tax' => floatval(Session::get('discounts')['tax_after_discount']),
+                'total' => floatval(Session::get('discounts')['total_after_discount'])
             ]);
         }
         else
         {
             Session::put('checkout', [
                 'discount' => 0,
-                'subtotal' => Cart::instance('cart')->subtotal(),
-                'tax' => Cart::instance('cart')->tax(),
-                'total' => Cart::instance('cart')->total()
+                'subtotal' => floatval(Cart::instance('cart')->subtotal()),
+                'tax' => floatval(Cart::instance('cart')->tax()),
+                'total' => floatval(Cart::instance('cart')->total())
             ]);
         }
     }
 
+
+    /**
+     * Affiche la page de confirmation de commande.
+     *
+     * Cette méthode vérifie si un ID de commande est présent dans la session.
+     * Si oui, elle récupère la commande associée et renvoie la vue de confirmation.
+     * Sinon, elle redirige l'utilisateur vers le panier.
+     *
+     * @return \Illuminate\View\View|\Illuminate\Http\RedirectResponse
+     */
     public function order_confirmation()
     {
-        if(Session::has('order_id'))
-        {
+        // Vérifie si un ID de commande est stocké en session
+        if (Session::has('order_id')) {
+            // Récupère la commande avec l'ID en session, ou échoue si elle n'existe pas
             $order = Order::findOrFail(Session::get('order_id'));
+
+            // Affiche la page de confirmation avec les données de la commande
             return view('order-confirmation', compact('order'));
         }
 
+        // Si aucun ID de commande en session, redirige vers le panier
         return redirect()->route('cart.index');
     }
+
 
 
 

@@ -3,6 +3,20 @@
 @section('content')
   <!-- main -->
   <main>
+
+    {{-- Affiche n'importe quelle erreur --}}
+    <div class="mb-3">
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+                </ul>
+            </div>
+        @endif
+    </div>
+
     <section class="swiper-container js-swiper-slider swiper-number-pagination slideshow" data-settings='{
         "autoplay": {
           "delay": 5000
