@@ -20,14 +20,12 @@ return new class extends Migration
             $table->text('address');
             $table->string('city');
             $table->string('state');
-            $table->string('counrty');
+            $table->string('country');
             $table->string('landmark')->nullable();
             $table->string('zip');
             $table->string('type')->default('home');
             $table->boolean('isdefault')->default(false);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-
-
 
             $table->timestamps();
         });

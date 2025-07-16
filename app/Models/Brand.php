@@ -28,6 +28,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Brand whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Brand whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Brand whereUpdatedAt($value)
+ * @method static \Database\Factories\BrandFactory factory($count = null, $state = [])
  * @mixin \Eloquent
  */
 class Brand extends Model

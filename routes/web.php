@@ -97,6 +97,11 @@ Route::delete('/wishlist/item/remove/{rowId}', [WishListController::class, 'remo
 Route::delete('/wishlist/clear', [WishListController::class, 'empty_wishlist'])->name('wishlist.items.clear');
 Route::post('/wishlist/move-to-cart/{rowId}', [WishListController::class, 'move_to_cart'])->name('wishlist.move.to.cart');
 
+// Route de checkout
+Route::get('/checkout',[CartController::class, 'checkout'])->name('cart.checkout');
+Route::post('/place-an-order',[CartController::class, 'place_an_order'])->name('cart.place.an.order');
+Route::get('/order-confirmation',[CartController::class, 'order_confirmation'])->name('cart.order.confirmation');
+
 // Routes protegées par le middleware('auth') pour acceder au contrôleur 'UserController'
 Route::middleware('auth')->group(function(){
     Route::get('/account-dashboard', [UserController::class, 'index'])->name('user.index');

@@ -9,6 +9,13 @@
             .text-danger {
                 color: #d61808 !important;
             }
+            .btn-animated {
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .btn-animated:hover {
+                transform: scale(1.05);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            }
         </style>
     @endpush
     <main class="pt-90">
@@ -21,7 +28,7 @@
             <a href="javascript:void(0)" class="checkout-steps__item active">
             <span class="checkout-steps__item-number">01</span>
             <span class="checkout-steps__item-title">
-                <span>Sac à provisions</span>
+                <span>Voir le panier</span>
                 <em>Gérez votre liste d'articles</em>
             </span>
             </a>
@@ -61,7 +68,7 @@
                                 <div class="shopping-cart__product-item">
                                     <img
                                         loading="lazy"
-                                        src="{{ asset('uploads/products/thumbnails') }}/{{ $item->model->image }}"
+                                        src="{{ asset('uploads/products') }}/{{ $item->model->image }}"
                                         width="120"
                                         height="120"
                                         alt="{{ $item->name }}"
@@ -182,26 +189,26 @@
                                 <tbody>
                                     <tr>
                                         <th>Sous-total</th>
-                                        <td>${{ Cart::instance('cart')->subtotal() }}</td>
+                                        <td class="text-right">${{ Cart::instance('cart')->subtotal() }}</td>
                                     </tr>
                                         <th>Code Promo : @if (Session::has('coupon')) {{ Session::get('coupon')['code'] }} @endif</th>
-                                        <td>${{ Session::get('discounts')['discount'] }}</td>
+                                        <td class="text-right">${{ Session::get('discounts')['discount'] }}</td>
                                     </tr>
                                     <tr>
                                         <th>Sous total après rabais</th>
-                                        <td>${{ Session::get('discounts')['subtotal_after_discount'] }}</td>
+                                        <td class="text-right">${{ Session::get('discounts')['subtotal_after_discount'] }}</td>
                                     </tr>
                                     <tr>
                                         <th>Expedition</th>
-                                        <td>Free</td>
+                                        <td class="text-right">gratuite</td>
                                     </tr>
                                     <tr>
                                         <th>TVA</th>
-                                        <td>${{ Session::get('discounts')['tax_after_discount'] }}</td>
+                                        <td class="text-right">${{ Session::get('discounts')['tax_after_discount'] }}</td>
                                     </tr>
                                     <tr>
                                         <th>Total</th>
-                                        <td>${{ Session::get('discounts')['total_after_discount']}}</td>
+                                        <td class="text-right">${{ Session::get('discounts')['total_after_discount']}}</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -230,7 +237,7 @@
                         </div>
                         <div class="mobile_fixed-btn_wrapper">
                         <div class="button-wrapper container">
-                            <a href="checkout.html" class="btn btn-primary btn-checkout">PASSER A LA CAISSE</a>
+                            <a href="{{ route('cart.checkout') }}" class="btn btn-primary btn-checkout">PASSER A LA CAISSE</a>
                         </div>
                         </div>
                     </div>
@@ -239,10 +246,13 @@
                 <div class="row">
                     <div class="col-md-12 text-center pt-5 bp-5">
                         <p>Aucun article trouvé dans votre panier</p>
-                        <a href="{{ route('shop.index') }}" class="btn btn-info text-white fw-bold px-4 py-2 rounded-pill shadow-sm d-inline-flex align-items-center gap-2">
-                            <i class="bi bi-eye"></i> Afficher maintenant
+                        <a
+                            href="{{ route('shop.index') }}"
+                            class="btn btn-animated text-white px-4 py-2 rounded-sm shadow-sm d-inline-flex align-items-center gap-2"
+                            style="background: #cc9900;">
+                            <i class="bi bi-eye"></i>
+                            Afficher maintenant
                         </a>
-
                     </div>
                 </div>
             @endif
